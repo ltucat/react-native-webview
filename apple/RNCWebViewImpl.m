@@ -261,6 +261,11 @@ RCTAutoInsetsProtocol>
     if (pressSender.state != UIGestureRecognizerStateEnded || !self.menuItems) {
         return;
     }
+    // <randpress>
+    if (self.menuItems.count == 1 && [self.menuItems[0][@"key"] isEqual:@"_empty"]) {
+        return;
+    }
+    // </randpress>
     if (@available(iOS 16.0, *)) {
       CGPoint location = [pressSender locationInView:self];
       UIEditMenuConfiguration *config = [UIEditMenuConfiguration configurationWithIdentifier:nil sourcePoint:location];
@@ -486,6 +491,24 @@ RCTAutoInsetsProtocol>
     }
   }
 #endif
+
+// <randpress>
+#if (TARGET_OS_IOS && !TARGET_OS_VISION)
+    if (@available(iOS 18.0, *)) {
+        if ([wkWebViewConfig respondsToSelector:@selector(writingToolsBehavior)]) {
+            [wkWebViewConfig setValue:@(UIWritingToolsBehaviorNone)
+                             forKey:@"writingToolsBehavior"];
+        }
+    }
+#elif TARGET_OS_OSX
+    if (@available(macOS 15.0, *)) {
+        if ([wkWebViewConfig respondsToSelector:@selector(writingToolsBehavior)]) {
+            [wkWebViewConfig setValue:@(UIWritingToolsBehaviorNone)
+                             forKey:@"writingToolsBehavior"];
+        }
+    }
+#endif
+// </randpress>
 
   // Shim the HTML5 history API:
   [wkWebViewConfig.userContentController addScriptMessageHandler:[[RNCWeakScriptMessageDelegate alloc] initWithDelegate:self]
