@@ -162,7 +162,7 @@ public class RNCWebView extends WebView implements LifecycleEventListener {
       return super.startActionMode(new ActionMode.Callback2() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-          if (menuCustomItems.isEmpty()) {
+          if (menuCustomItems.size() == 1 && "_empty".equals(menuCustomItems.get(0).get("key"))) {
             return false;
           }
           for (int i = 0; i < menuCustomItems.size(); i++) {
