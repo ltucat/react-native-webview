@@ -94,14 +94,15 @@ NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
   return NO;
 }
 - (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder API_AVAILABLE(ios(13.0))  {
+    [super buildMenuWithBuilder:builder];
     if (@available(iOS 16.0, *)) {
       if(self.menuItems){
         [builder removeMenuForIdentifier:UIMenuLookup];
         [builder removeMenuForIdentifier:UIMenuStandardEdit];
         [builder removeMenuForIdentifier:UIMenuShare];
+        [builder removeMenuForIdentifier:UIMenuTranslate];
       }
     }
-    [super buildMenuWithBuilder:builder];
 }
 #else // TARGET_OS_OSX
 - (void)scrollWheel:(NSEvent *)theEvent {
