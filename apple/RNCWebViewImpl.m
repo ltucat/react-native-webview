@@ -100,7 +100,6 @@ NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
         [builder removeMenuForIdentifier:UIMenuLookup];
         [builder removeMenuForIdentifier:UIMenuStandardEdit];
         [builder removeMenuForIdentifier:UIMenuShare];
-        [builder removeMenuForIdentifier:UIMenuTranslate];
       }
     }
 }
