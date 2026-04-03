@@ -91,16 +91,46 @@ NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
       return [super canPerformAction:action withSender:sender];
   }
 
+  // menuItems is set (including empty []) — block all system actions
   return NO;
 }
+
 - (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder API_AVAILABLE(ios(13.0))  {
+    if (self.menuItems) {
+      // Don't call super — prevent WKWebView from adding any system menus
+      return;
+    }
     [super buildMenuWithBuilder:builder];
-    if (@available(iOS 16.0, *)) {
-      if(self.menuItems){
-        [builder removeMenuForIdentifier:UIMenuLookup];
-        [builder removeMenuForIdentifier:UIMenuStandardEdit];
-        [builder removeMenuForIdentifier:UIMenuShare];
-      }
+}
+
+- (void)didMoveToWindow {
+    [super didMoveToWindow];
+    if (self.menuItems && self.menuItems.count == 0) {
+        [self removeEditMenuInteractions];
+    }
+}
+
+- (void)removeEditMenuInteractions {
+    // Remove all UIEditMenuInteraction instances that WKWebView adds internally
+    NSArray *interactions = [self.interactions copy];
+    for (id interaction in interactions) {
+        if ([interaction isKindOfClass:[UIEditMenuInteraction class]]) {
+            [self removeInteraction:interaction];
+        }
+    }
+    // Also walk subviews — WKContentView may have its own interactions
+    [self removeEditMenuInteractionsFromSubviews:self];
+}
+
+- (void)removeEditMenuInteractionsFromSubviews:(UIView *)view {
+    for (UIView *subview in view.subviews) {
+        NSArray *interactions = [subview.interactions copy];
+        for (id interaction in interactions) {
+            if ([interaction isKindOfClass:[UIEditMenuInteraction class]]) {
+                [subview removeInteraction:interaction];
+            }
+        }
+        [self removeEditMenuInteractionsFromSubviews:subview];
     }
 }
 #else // TARGET_OS_OSX
@@ -614,13 +644,21 @@ RCTAutoInsetsProtocol>
 #if !TARGET_OS_OSX
   // Allow this object to recognize gestures
   if (self.menuItems != nil) {
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(startLongPress:)];
-    longPress.delegate = self;
+    if (self.menuItems.count == 0) {
+      // Nuclear: remove the edit menu interaction from this view too
+      if (_editMenuInteraction) {
+        [self removeInteraction:_editMenuInteraction];
+        _editMenuInteraction = nil;
+      }
+    } else {
+      UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(startLongPress:)];
+      longPress.delegate = self;
 
-    longPress.minimumPressDuration = 0.4f;
-    longPress.numberOfTouchesRequired = 1;
-    longPress.cancelsTouchesInView = YES;
-    [self addGestureRecognizer:longPress];
+      longPress.minimumPressDuration = 0.4f;
+      longPress.numberOfTouchesRequired = 1;
+      longPress.cancelsTouchesInView = YES;
+      [self addGestureRecognizer:longPress];
+    }
   }
 #endif // !TARGET_OS_OSX
 }
