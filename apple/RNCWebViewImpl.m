@@ -97,6 +97,8 @@ NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
     if (@available(iOS 16.0, *)) {
       if(self.menuItems){
         [builder removeMenuForIdentifier:UIMenuLookup];
+        [builder removeMenuForIdentifier:UIMenuStandardEdit];
+        [builder removeMenuForIdentifier:UIMenuShare];
       }
     }
     [super buildMenuWithBuilder:builder];
@@ -267,6 +269,10 @@ RCTAutoInsetsProtocol>
     }
     // </randpress>
     if (@available(iOS 16.0, *)) {
+      // Empty menuItems means suppress the menu entirely
+      if (self.menuItems.count == 0) {
+        return;
+      }
       CGPoint location = [pressSender locationInView:self];
       UIEditMenuConfiguration *config = [UIEditMenuConfiguration configurationWithIdentifier:nil sourcePoint:location];
       [_editMenuInteraction presentEditMenuWithConfiguration:config];
@@ -297,6 +303,11 @@ RCTAutoInsetsProtocol>
 
 - (UIMenu *)editMenuInteraction:(UIEditMenuInteraction *)interaction menuForConfiguration:(UIEditMenuConfiguration *)configuration suggestedActions:(NSArray<UIMenuElement *> *)suggestedActions API_AVAILABLE(ios(16.0))
 {
+  // An empty menuItems array means suppress the menu entirely
+  if (self.menuItems.count == 0) {
+    return nil;
+  }
+
   NSMutableArray<UICommand *> *menuItems = [NSMutableArray new];
   for(NSDictionary *menuItem in self.menuItems) {
     NSString *menuItemLabel = [RCTConvert NSString:menuItem[@"label"]];
