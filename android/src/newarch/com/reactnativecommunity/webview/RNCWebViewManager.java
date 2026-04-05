@@ -428,6 +428,9 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
 
     @Override
     public void setFraudulentWebsiteWarningEnabled(RNCWebViewWrapper view, boolean value) {}
+
+    @Override
+    public void setWebviewTintColor(RNCWebViewWrapper view, @Nullable Integer value) {}
     /* !iOS PROPS - no implemented here */
 
     @Override
