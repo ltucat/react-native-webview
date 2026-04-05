@@ -9,6 +9,7 @@
 #import <react/renderer/components/RNCWebViewSpec/RCTComponentViewHelpers.h>
 
 #import <React/RCTFabricComponentsPlugins.h>
+#import <React/RCTConversions.h>
 
 using namespace facebook::react;
 
@@ -299,6 +300,11 @@ auto stringToOnLoadingFinishNavigationTypeEnum(std::string value) {
     REMAP_WEBVIEW_PROP(fraudulentWebsiteWarningEnabled)
     #endif // !TARGET_OS_OSX
     REMAP_WEBVIEW_PROP(enableApplePay)
+#if !TARGET_OS_OSX
+    if (oldViewProps.webviewTintColor != newViewProps.webviewTintColor) {
+        _view.webviewTintColor = RCTUIColorFromSharedColor(newViewProps.webviewTintColor);
+    }
+#endif // !TARGET_OS_OSX
     REMAP_WEBVIEW_PROP(pullToRefreshEnabled)
     REMAP_WEBVIEW_PROP(refreshControlLightMode)
     REMAP_WEBVIEW_PROP(bounces)

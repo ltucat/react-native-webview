@@ -114,6 +114,9 @@ RCT_EXPORT_VIEW_PROPERTY(messagingEnabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(onMessage, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(enableApplePay, BOOL)
+RCT_CUSTOM_VIEW_PROPERTY(webviewTintColor, UIColor, RNCWebViewImpl) {
+  view.webviewTintColor = json ? [RCTConvert UIColor:json] : nil;
+}
 RCT_EXPORT_VIEW_PROPERTY(menuItems, NSArray);
 RCT_EXPORT_VIEW_PROPERTY(suppressMenuItems, NSArray);
 

@@ -1,4 +1,4 @@
-import type { HostComponent, ViewProps } from 'react-native';
+import type { HostComponent, ViewProps, ColorValue } from 'react-native';
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
 import {
   DirectEventHandler,
@@ -246,6 +246,7 @@ export interface NativeProps extends ViewProps {
   // Workaround to watch if listener if defined
   hasOnFileDownload?: boolean;
   fraudulentWebsiteWarningEnabled?: WithDefault<boolean, true>;
+  webviewTintColor?: ColorValue;
   // !iOS only
 
   allowFileAccessFromFileURLs?: boolean;

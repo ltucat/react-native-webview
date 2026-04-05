@@ -139,6 +139,7 @@ RCTAutoInsetsProtocol>
 {
 #if !TARGET_OS_OSX
   UIColor * _savedBackgroundColor;
+  UIColor * _savedWebviewTintColor;
 #else
   RCTUIColor * _savedBackgroundColor;
 #endif // !TARGET_OS_OSX
@@ -549,6 +550,11 @@ RCTAutoInsetsProtocol>
     _webView = [[RNCWKWebView alloc] initWithFrame:self.bounds configuration: wkWebViewConfig];
     [self setBackgroundColor: _savedBackgroundColor];
 #if !TARGET_OS_OSX
+    if (_savedWebviewTintColor) {
+      _webView.tintColor = _savedWebviewTintColor;
+    }
+#endif // !TARGET_OS_OSX
+#if !TARGET_OS_OSX
     _webView.menuItems = _menuItems;
     _webView.suppressMenuItems = _suppressMenuItems;
     _webView.scrollView.delegate = self;
@@ -769,6 +775,17 @@ RCTAutoInsetsProtocol>
   }
 #endif // !TARGET_OS_OSX
 }
+
+#if !TARGET_OS_OSX
+- (void)setWebviewTintColor:(UIColor *)webviewTintColor
+{
+  _savedWebviewTintColor = webviewTintColor;
+  if (_webView == nil) {
+    return;
+  }
+  _webView.tintColor = webviewTintColor;
+}
+#endif // !TARGET_OS_OSX
 
 #if !TARGET_OS_OSX
 - (void)setContentInsetAdjustmentBehavior:(UIScrollViewContentInsetAdjustmentBehavior)behavior

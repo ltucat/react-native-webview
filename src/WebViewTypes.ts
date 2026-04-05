@@ -7,6 +7,7 @@ import {
   NativeMethodsMixin,
   UIManagerStatic,
   NativeScrollEvent,
+  ColorValue,
 } from 'react-native';
 
 import type NativeWebViewComponent from './RNCWebViewNativeComponent';
@@ -742,6 +743,14 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    * The default value is false.
    */
   enableApplePay?: boolean;
+
+  /**
+   * Sets the tint color for the WKWebView. This controls the text selection
+   * highlight color and selection handle color.
+   * Accepts any React Native color value (e.g. '#FF0000', 'rgba(255,0,0,0.5)').
+   * @platform ios
+   */
+  webviewTintColor?: ColorValue;
 
   /**
    * An array of objects which will be shown when selecting text. An empty array will suppress the menu.
